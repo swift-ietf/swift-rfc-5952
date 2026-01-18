@@ -23,23 +23,19 @@ let package = Package(
         .watchOS(.v26)
     ],
     products: [
-        .library(name: .rfc5952, targets: [.rfc5952]),
+        .library(name: "RFC 5952", targets: ["RFC 5952"])
     ],
     dependencies: [
         .package(path: "../swift-rfc-4291"),
         .package(path: "../../swift-primitives/swift-standard-library-extensions"),
         .package(path: "../../swift-foundations/swift-ascii"),
-        .package(path: "../swift-rfc-4648"),
+        .package(path: "../swift-rfc-4648")
     ],
     targets: [
         .target(
-            name: .rfc5952,
+            name: "RFC 5952",
             dependencies: [.rfc4291, .standards, .incits41986, .rfc4648]
-        ),
-        .testTarget(
-            name: .rfc5952.tests,
-            dependencies: [.rfc5952]
-        ),
+        )
     ],
     swiftLanguageModes: [.v6]
 )
