@@ -26,10 +26,10 @@ let package = Package(
         .library(name: .rfc5952, targets: [.rfc5952]),
     ],
     dependencies: [
-        .package(url: "https://github.com/swift-standards/swift-rfc-4291.git", from: "0.0.1"),
-        .package(url: "https://github.com/swift-primitives/swift-standard-library-extensions.git", from: "0.0.1"),
-        .package(url: "https://github.com/swift-foundations/swift-ascii.git", from: "0.0.1"),
-        .package(url: "https://github.com/swift-standards/swift-rfc-4648.git", from: "0.0.1"),
+        .package(path: "../swift-rfc-4291"),
+        .package(path: "../../swift-primitives/swift-standard-library-extensions"),
+        .package(path: "../../swift-foundations/swift-ascii"),
+        .package(path: "../swift-rfc-4648"),
     ],
     targets: [
         .target(
