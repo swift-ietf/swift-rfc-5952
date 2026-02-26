@@ -35,7 +35,13 @@ let package = Package(
         .target(
             name: "RFC 5952",
             dependencies: [.rfc4291, .standards, .incits41986, .rfc4648]
-        )
+        ),
+        .testTarget(
+            name: "RFC 5952 Tests",
+            dependencies: [
+                "RFC 5952",
+            ]
+        ),
     ],
     swiftLanguageModes: [.v6]
 )
@@ -46,6 +52,7 @@ for target in package.targets where ![.system, .binary, .plugin, .macro].contain
         .enableUpcomingFeature("ExistentialAny"),
         .enableUpcomingFeature("InternalImportsByDefault"),
         .enableUpcomingFeature("MemberImportVisibility"),
+        .enableUpcomingFeature("NonisolatedNonsendingByDefault"),
         .enableExperimentalFeature("Lifetimes"),
         .enableExperimentalFeature("SuppressedAssociatedTypes"),
         .enableExperimentalFeature("SuppressedAssociatedTypesWithDefaults"),
