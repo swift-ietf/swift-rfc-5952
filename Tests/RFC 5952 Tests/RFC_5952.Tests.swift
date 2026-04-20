@@ -20,8 +20,8 @@ struct RFC5952Tests {
 
     // MARK: - RFC 5952 Section 4.1: Leading Zeros
 
-    @Test("RFC 5952 Section 4.1: Leading zeros MUST be suppressed")
-    func leadingZeroSuppression() throws {
+    @Test
+    func `RFC 5952 Section 4.1: Leading zeros MUST be suppressed`() throws {
         // 2001:0db8:0000:0000:0000:0000:0000:0001 → 2001:db8::1
         let address = RFC_4291.IPv6.Address(
             0x2001,
@@ -42,8 +42,8 @@ struct RFC5952Tests {
 
     // MARK: - RFC 5952 Section 4.2: :: Usage
 
-    @Test("RFC 5952 Section 4.2.1: :: MUST be used for longest zero run")
-    func compressionLongestRun() throws {
+    @Test
+    func `RFC 5952 Section 4.2.1: :: MUST be used for longest zero run`() throws {
         // Multiple zero runs, longest should be compressed
         let address = RFC_4291.IPv6.Address(
             0x2001,
@@ -61,8 +61,8 @@ struct RFC5952Tests {
         #expect(text == "2001:db8::1:0:1")
     }
 
-    @Test("RFC 5952 Section 4.2.2: Single zero MUST NOT use ::")
-    func singleZeroNoCompression() throws {
+    @Test
+    func `RFC 5952 Section 4.2.2: Single zero MUST NOT use ::`() throws {
         // Single zeros should be represented as "0", not "::"
         let address = RFC_4291.IPv6.Address(
             0x2001,
@@ -80,8 +80,8 @@ struct RFC5952Tests {
         #expect(!text.contains("::"))  // No compression for single zeros
     }
 
-    @Test("RFC 5952 Section 4.2.3: Choose first occurrence when multiple equal runs")
-    func compressionFirstOccurrence() throws {
+    @Test
+    func `RFC 5952 Section 4.2.3: Choose first occurrence when multiple equal runs`() throws {
         // Two runs of 2 zeros each - first should be compressed
         let address = RFC_4291.IPv6.Address(
             0x2001,
@@ -101,8 +101,8 @@ struct RFC5952Tests {
 
     // MARK: - RFC 5952 Section 4.3: Lowercase
 
-    @Test("RFC 5952 Section 4.3: Hexadecimal digits MUST be lowercase")
-    func lowercaseHexadecimal() throws {
+    @Test
+    func `RFC 5952 Section 4.3: Hexadecimal digits MUST be lowercase`() throws {
         let address = RFC_4291.IPv6.Address(
             0x2001,
             0x0db8,
@@ -127,24 +127,24 @@ struct RFC5952Tests {
 
     // MARK: - Well-Known Addresses
 
-    @Test("Unspecified address (::)")
-    func unspecifiedAddress() throws {
+    @Test
+    func `Unspecified address (::)`() throws {
         let address = RFC_4291.IPv6.Address.unspecified
         let text = String(address)
 
         #expect(text == "::")
     }
 
-    @Test("Loopback address (::1)")
-    func loopbackAddress() throws {
+    @Test
+    func `Loopback address (::1)`() throws {
         let address = RFC_4291.IPv6.Address.loopback
         let text = String(address)
 
         #expect(text == "::1")
     }
 
-    @Test("IPv4-mapped IPv6 address")
-    func ipv4MappedAddress() throws {
+    @Test
+    func `IPv4-mapped IPv6 address`() throws {
         // ::ffff:192.0.2.1 (in pure IPv6 notation)
         let address = RFC_4291.IPv6.Address(0, 0, 0, 0, 0, 0xffff, 0xc000, 0x0201)
         let text = String(address)
@@ -152,24 +152,24 @@ struct RFC5952Tests {
         #expect(text == "::ffff:c000:201")
     }
 
-    @Test("Documentation prefix (2001:db8::/32)")
-    func documentationPrefix() throws {
+    @Test
+    func `Documentation prefix (2001:db8::/32)`() throws {
         let address = RFC_4291.IPv6.Address(0x2001, 0x0db8, 0, 0, 0, 0, 0, 1)
         let text = String(address)
 
         #expect(text == "2001:db8::1")
     }
 
-    @Test("Link-local address (fe80::)")
-    func linkLocalAddress() throws {
+    @Test
+    func `Link-local address (fe80::)`() throws {
         let address = RFC_4291.IPv6.Address(0xfe80, 0, 0, 0, 0, 0, 0, 1)
         let text = String(address)
 
         #expect(text == "fe80::1")
     }
 
-    @Test("Multicast address (ff02::1)")
-    func multicastAddress() throws {
+    @Test
+    func `Multicast address (ff02::1)`() throws {
         let address = RFC_4291.IPv6.Address(0xff02, 0, 0, 0, 0, 0, 0, 1)
         let text = String(address)
 
@@ -178,8 +178,8 @@ struct RFC5952Tests {
 
     // MARK: - Edge Cases
 
-    @Test("No compression needed - no zero runs")
-    func noCompressionNeeded() throws {
+    @Test
+    func `No compression needed - no zero runs`() throws {
         let address = RFC_4291.IPv6.Address(
             0x2001,
             0x0db8,
@@ -196,32 +196,32 @@ struct RFC5952Tests {
         #expect(!text.contains("::"))
     }
 
-    @Test("Compression at beginning")
-    func compressionAtBeginning() throws {
+    @Test
+    func `Compression at beginning`() throws {
         let address = RFC_4291.IPv6.Address(0, 0, 0, 1, 2, 3, 4, 5)
         let text = String(address)
 
         #expect(text == "::1:2:3:4:5")
     }
 
-    @Test("Compression at end")
-    func compressionAtEnd() throws {
+    @Test
+    func `Compression at end`() throws {
         let address = RFC_4291.IPv6.Address(0x2001, 0x0db8, 1, 2, 0, 0, 0, 0)
         let text = String(address)
 
         #expect(text == "2001:db8:1:2::")
     }
 
-    @Test("Compression in middle")
-    func compressionInMiddle() throws {
+    @Test
+    func `Compression in middle`() throws {
         let address = RFC_4291.IPv6.Address(0x2001, 0x0db8, 0, 0, 0, 0, 1, 2)
         let text = String(address)
 
         #expect(text == "2001:db8::1:2")
     }
 
-    @Test("Maximum value segments")
-    func maximumValueSegments() throws {
+    @Test
+    func `Maximum value segments`() throws {
         let address = RFC_4291.IPv6.Address(
             0xffff,
             0xffff,
@@ -239,8 +239,8 @@ struct RFC5952Tests {
 
     // MARK: - Canonicalization Examples from RFC 5952
 
-    @Test("RFC 5952 Example: 2001:db8:0:0:1:0:0:1")
-    func rfc5952Example1() throws {
+    @Test
+    func `RFC 5952 Example: 2001:db8:0:0:1:0:0:1`() throws {
         let address = RFC_4291.IPv6.Address(0x2001, 0x0db8, 0, 0, 1, 0, 0, 1)
         let text = String(address)
 
@@ -248,8 +248,8 @@ struct RFC5952Tests {
         #expect(text == "2001:db8::1:0:0:1")
     }
 
-    @Test("RFC 5952 Example: 2001:0db8:0:0:0:0:0:1")
-    func rfc5952Example2() throws {
+    @Test
+    func `RFC 5952 Example: 2001:0db8:0:0:0:0:0:1`() throws {
         let address = RFC_4291.IPv6.Address(0x2001, 0x0db8, 0, 0, 0, 0, 0, 1)
         let text = String(address)
 
