@@ -1,0 +1,9 @@
+# .github/metadata.yaml
+# Triaged by AI-assisted bulk pass (2026-04-29).
+description: "Swift implementation of RFC 5952: A Recommendation for IPv6 Address Text Representation."
+topics:
+  - standards
+  - rfc
+  - rfc-5952
+  - ipv6
+homepage: "https://swift-institute.org"
