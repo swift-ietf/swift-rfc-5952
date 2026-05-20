@@ -16,7 +16,7 @@
 // RFC 5952 canonical serialization conformance for IPv6 addresses
 
 import RFC_4291
-import RFC_4648
+public import RFC_4648
 
 // MARK: - Canonical Serialization (RFC 5952)
 
@@ -31,20 +31,15 @@ extension RFC_4291.IPv6.Address {
     ///
     /// ## Category Theory
     ///
-    /// Natural transformation: RFC_4291.IPv6.Address → [UInt8]
+    /// Natural transformation: RFC_4291.IPv6.Address → [ASCII.Code]
     ///
     /// This is the authoritative serialization that all other representations
-    /// (String, etc.) derive from.
-    ///
-    /// ## Implementation Note
-    ///
-    /// This static property is redeclared to use RFC 5952's canonical [UInt8].init(_:)
-    /// instead of RFC 4291's implementation. When RFC 5952 is imported, this takes
-    /// precedence as the canonical serialization.
+    /// (String, etc.) derive from. Output is `[ASCII.Code]` per the rfc-4648
+    /// Arc C-continuation (2026-05-20) — the encoded textual form is ASCII.
     static public func serialize<Buffer>(
         _ address: RFC_4291.IPv6.Address,
         into buffer: inout Buffer
-    ) where Buffer: RangeReplaceableCollection, Buffer.Element == UInt8 {
+    ) where Buffer: RangeReplaceableCollection, Buffer.Element == ASCII.Code {
         let segments = [
             address.segments.0, address.segments.1, address.segments.2, address.segments.3,
             address.segments.4, address.segments.5, address.segments.6, address.segments.7,
@@ -87,8 +82,8 @@ extension RFC_4291.IPv6.Address {
                 && index < longestZeroRun.start + longestZeroRun.length {
                 if index == longestZeroRun.start {
                     // Section 4.2.2: "::" replaces the run
-                    buffer.append(.ascii.colon)
-                    buffer.append(.ascii.colon)
+                    buffer.append(.colon)
+                    buffer.append(.colon)
                     skipNext = true
                 }
                 continue
@@ -96,7 +91,7 @@ extension RFC_4291.IPv6.Address {
 
             // Add colon separator (but not before first segment or after ::)
             if index > 0 && !skipNext {
-                buffer.append(.ascii.colon)
+                buffer.append(.colon)
             }
             skipNext = false
 
