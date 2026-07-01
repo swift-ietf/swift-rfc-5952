@@ -51,8 +51,9 @@ extension String {
     ///
     /// - Parameter address: The IPv6 address to represent
     public init(_ address: RFC_4291.IPv6.Address) {
-        // Compose through canonical byte representation
-        // ASCII ⊂ UTF-8, so this is always valid
-        self.init(ascii: address)
+        // Route through the canonical RFC 5952 text surface (`description`),
+        // which derives from the live `ASCII.Serializable` verb in this package.
+        // ASCII ⊂ UTF-8, so this is always valid.
+        self = address.description
     }
 }
