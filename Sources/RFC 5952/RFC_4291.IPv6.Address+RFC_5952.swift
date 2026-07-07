@@ -88,7 +88,8 @@ extension RFC_4291.IPv6.Address: @retroactive ASCII.Serializable {
         for index in 0..<8 {
             // Handle compression
             if shouldCompress && index >= longestZeroRun.start
-                && index < longestZeroRun.start + longestZeroRun.length {
+                && index < longestZeroRun.start + longestZeroRun.length
+            {
                 if index == longestZeroRun.start {
                     // Section 4.2.2: "::" replaces the run
                     buffer.append(.colon)
@@ -114,7 +115,7 @@ extension RFC_4291.IPv6.Address: @retroactive ASCII.Serializable {
 // MARK: - Canonical text surface (RFC 5952)
 
 extension RFC_4291.IPv6.Address: @retroactive CustomStringConvertible {
-    /// The address in canonical RFC 5952 text form (e.g. "2001:db8::1").
+    /// The address in canonical RFC 5952 text form, such as "2001:db8::1".
     ///
     /// Derived from the canonical `ASCII.Serializable` verb above.
     public var description: String {
@@ -134,7 +135,7 @@ extension RFC_4291.IPv6.Address: @retroactive Swift.RawRepresentable {
     /// RFC 4291 grammar parser. Returns `nil` for malformed text.
     public init?(rawValue: String) {
         do {
-            try self.init(ascii: Array<Byte>(rawValue.utf8))
+            try self.init(ascii: [Byte](rawValue.utf8))
         } catch {
             return nil
         }
@@ -155,7 +156,7 @@ extension RFC_4291.IPv6.Address: @retroactive Decodable {
         let container = try decoder.singleValueContainer()
         let string = try container.decode(String.self)
         do {
-            try self.init(ascii: Array<Byte>(string.utf8))
+            try self.init(ascii: [Byte](string.utf8))
         } catch {
             throw DecodingError.dataCorrupted(
                 DecodingError.Context(
