@@ -134,7 +134,7 @@ extension RFC_4291.IPv6.Address: @retroactive Swift.RawRepresentable {
     /// Parses an IPv6 address from canonical (or any RFC 4291 §2.2) text via the
     /// RFC 4291 grammar parser. Returns `nil` for malformed text.
     public init?(rawValue: String) {
-        do {
+        do throws(RFC_4291.IPv6.Address.Error) {
             try self.init(ascii: [Byte](rawValue.utf8))
         } catch {
             return nil
@@ -155,7 +155,7 @@ extension RFC_4291.IPv6.Address: @retroactive Decodable {
     public init(from decoder: any Decoder) throws {
         let container = try decoder.singleValueContainer()
         let string = try container.decode(String.self)
-        do {
+        do throws(RFC_4291.IPv6.Address.Error) {
             try self.init(ascii: [Byte](string.utf8))
         } catch {
             throw DecodingError.dataCorrupted(
