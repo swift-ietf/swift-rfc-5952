@@ -263,8 +263,9 @@ struct RFC5952Tests {
 /// lives in this package (DECISION 3, Option B): `ASCII.Serializable`,
 /// `description`, `rawValue`, and `Codable` are all retroactive conformances that
 /// route through the single canonical verb.
-@Suite("RFC 5952 canonical text surface")
-struct CanonicalTextSurfaceTests {
+extension RFC_5952 {
+    @Suite("RFC 5952 canonical text surface")
+    struct Test {
 
     @Test
     func `description is the canonical RFC 5952 text`() {
@@ -327,6 +328,7 @@ struct CanonicalTextSurfaceTests {
 
         let decoded = try SingleStringCoder.decode(RFC_4291.IPv6.Address.self, from: encoded)
         #expect(decoded == original)
+    }
     }
 }
 
