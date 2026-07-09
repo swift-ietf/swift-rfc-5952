@@ -335,7 +335,9 @@ struct CanonicalTextSurfaceTests {
 /// Minimal `Encoder`/`Decoder` that carries a single `String` value, used to
 /// exercise a `Codable` conformance whose single-value payload is a string —
 /// without importing Foundation into this standards test target.
-private enum SingleStringCoder {
+private enum SingleStringCoder {}
+
+extension SingleStringCoder {
     static func encode<T: Encodable>(_ value: T) -> String {
         let encoder = StringEncoder()
         try? value.encode(to: encoder)
@@ -350,29 +352,6 @@ private enum SingleStringCoder {
         var value: String?
         var codingPath: [any CodingKey] = []
         var userInfo: [CodingUserInfoKey: Any] = [:]
-
-        func singleValueContainer() -> SingleValueEncodingContainer { self }
-        func unkeyedContainer() -> UnkeyedEncodingContainer { fatalError("unsupported") }
-        func container<Key>(keyedBy: Key.Type) -> KeyedEncodingContainer<Key> {
-            fatalError("unsupported")
-        }
-
-        func encodeNil() throws {}
-        func encode(_ v: String) throws { value = v }
-        func encode(_ v: Bool) throws { fatalError("unsupported") }
-        func encode(_ v: Double) throws { fatalError("unsupported") }
-        func encode(_ v: Float) throws { fatalError("unsupported") }
-        func encode(_ v: Int) throws { fatalError("unsupported") }
-        func encode(_ v: Int8) throws { fatalError("unsupported") }
-        func encode(_ v: Int16) throws { fatalError("unsupported") }
-        func encode(_ v: Int32) throws { fatalError("unsupported") }
-        func encode(_ v: Int64) throws { fatalError("unsupported") }
-        func encode(_ v: UInt) throws { fatalError("unsupported") }
-        func encode(_ v: UInt8) throws { fatalError("unsupported") }
-        func encode(_ v: UInt16) throws { fatalError("unsupported") }
-        func encode(_ v: UInt32) throws { fatalError("unsupported") }
-        func encode(_ v: UInt64) throws { fatalError("unsupported") }
-        func encode<T: Encodable>(_ v: T) throws { try v.encode(to: self) }
     }
 
     struct StringDecoder: Decoder, SingleValueDecodingContainer {
@@ -381,28 +360,55 @@ private enum SingleStringCoder {
         var userInfo: [CodingUserInfoKey: Any] = [:]
 
         init(_ string: String) { self.string = string }
-
-        func singleValueContainer() throws -> SingleValueDecodingContainer { self }
-        func unkeyedContainer() throws -> UnkeyedDecodingContainer { fatalError("unsupported") }
-        func container<Key>(keyedBy: Key.Type) throws -> KeyedDecodingContainer<Key> {
-            fatalError("unsupported")
-        }
-
-        func decodeNil() -> Bool { false }
-        func decode(_ type: String.Type) throws -> String { string }
-        func decode(_ type: Bool.Type) throws -> Bool { fatalError("unsupported") }
-        func decode(_ type: Double.Type) throws -> Double { fatalError("unsupported") }
-        func decode(_ type: Float.Type) throws -> Float { fatalError("unsupported") }
-        func decode(_ type: Int.Type) throws -> Int { fatalError("unsupported") }
-        func decode(_ type: Int8.Type) throws -> Int8 { fatalError("unsupported") }
-        func decode(_ type: Int16.Type) throws -> Int16 { fatalError("unsupported") }
-        func decode(_ type: Int32.Type) throws -> Int32 { fatalError("unsupported") }
-        func decode(_ type: Int64.Type) throws -> Int64 { fatalError("unsupported") }
-        func decode(_ type: UInt.Type) throws -> UInt { fatalError("unsupported") }
-        func decode(_ type: UInt8.Type) throws -> UInt8 { fatalError("unsupported") }
-        func decode(_ type: UInt16.Type) throws -> UInt16 { fatalError("unsupported") }
-        func decode(_ type: UInt32.Type) throws -> UInt32 { fatalError("unsupported") }
-        func decode(_ type: UInt64.Type) throws -> UInt64 { fatalError("unsupported") }
-        func decode<T: Decodable>(_ type: T.Type) throws -> T { try T(from: self) }
     }
+}
+
+extension SingleStringCoder.StringEncoder {
+    func singleValueContainer() -> SingleValueEncodingContainer { self }
+    func unkeyedContainer() -> UnkeyedEncodingContainer { fatalError("unsupported") }
+    func container<Key>(keyedBy: Key.Type) -> KeyedEncodingContainer<Key> {
+        fatalError("unsupported")
+    }
+
+    func encodeNil() throws {}
+    func encode(_ v: String) throws { value = v }
+    func encode(_ v: Bool) throws { fatalError("unsupported") }
+    func encode(_ v: Double) throws { fatalError("unsupported") }
+    func encode(_ v: Float) throws { fatalError("unsupported") }
+    func encode(_ v: Int) throws { fatalError("unsupported") }
+    func encode(_ v: Int8) throws { fatalError("unsupported") }
+    func encode(_ v: Int16) throws { fatalError("unsupported") }
+    func encode(_ v: Int32) throws { fatalError("unsupported") }
+    func encode(_ v: Int64) throws { fatalError("unsupported") }
+    func encode(_ v: UInt) throws { fatalError("unsupported") }
+    func encode(_ v: UInt8) throws { fatalError("unsupported") }
+    func encode(_ v: UInt16) throws { fatalError("unsupported") }
+    func encode(_ v: UInt32) throws { fatalError("unsupported") }
+    func encode(_ v: UInt64) throws { fatalError("unsupported") }
+    func encode<T: Encodable>(_ v: T) throws { try v.encode(to: self) }
+}
+
+extension SingleStringCoder.StringDecoder {
+    func singleValueContainer() throws -> SingleValueDecodingContainer { self }
+    func unkeyedContainer() throws -> UnkeyedDecodingContainer { fatalError("unsupported") }
+    func container<Key>(keyedBy: Key.Type) throws -> KeyedDecodingContainer<Key> {
+        fatalError("unsupported")
+    }
+
+    func decodeNil() -> Bool { false }
+    func decode(_ type: String.Type) throws -> String { string }
+    func decode(_ type: Bool.Type) throws -> Bool { fatalError("unsupported") }
+    func decode(_ type: Double.Type) throws -> Double { fatalError("unsupported") }
+    func decode(_ type: Float.Type) throws -> Float { fatalError("unsupported") }
+    func decode(_ type: Int.Type) throws -> Int { fatalError("unsupported") }
+    func decode(_ type: Int8.Type) throws -> Int8 { fatalError("unsupported") }
+    func decode(_ type: Int16.Type) throws -> Int16 { fatalError("unsupported") }
+    func decode(_ type: Int32.Type) throws -> Int32 { fatalError("unsupported") }
+    func decode(_ type: Int64.Type) throws -> Int64 { fatalError("unsupported") }
+    func decode(_ type: UInt.Type) throws -> UInt { fatalError("unsupported") }
+    func decode(_ type: UInt8.Type) throws -> UInt8 { fatalError("unsupported") }
+    func decode(_ type: UInt16.Type) throws -> UInt16 { fatalError("unsupported") }
+    func decode(_ type: UInt32.Type) throws -> UInt32 { fatalError("unsupported") }
+    func decode(_ type: UInt64.Type) throws -> UInt64 { fatalError("unsupported") }
+    func decode<T: Decodable>(_ type: T.Type) throws -> T { try T(from: self) }
 }
