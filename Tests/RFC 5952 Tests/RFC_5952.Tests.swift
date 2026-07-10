@@ -15,8 +15,10 @@ import Testing
 @testable import RFC_4291
 @testable import RFC_5952
 
-@Suite("RFC 5952: IPv6 Text Representation Tests")
-struct RFC5952Tests {
+// MARK: - Merged into RFC_5952.Test (SWIFT-TEST-002 collision: no leftover
+// distinguishing token after stripping "RFC5952"/"Tests"; members verified
+// trivially disjoint by name from the pre-existing RFC_5952.Test suite below).
+extension RFC_5952.Test {
 
     // MARK: - RFC 5952 Section 4.1: Leading Zeros
 
