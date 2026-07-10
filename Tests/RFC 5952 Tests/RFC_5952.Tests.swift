@@ -267,68 +267,79 @@ extension RFC_5952 {
     @Suite("RFC 5952 canonical text surface")
     struct Test {
 
-    @Test
-    func `description is the canonical RFC 5952 text`() {
-        let addr = RFC_4291.IPv6.Address(0x2001, 0x0db8, 0, 0, 0, 0, 0, 1)
-        #expect(addr.description == "2001:db8::1")
-        #expect(RFC_4291.IPv6.Address.loopback.description == "::1")
-        #expect(RFC_4291.IPv6.Address.unspecified.description == "::")
-    }
-
-    @Test
-    func `rawValue is the canonical RFC 5952 text`() {
-        let addr = RFC_4291.IPv6.Address(0x2001, 0x0db8, 0, 0, 0, 0, 0, 1)
-        #expect(addr.rawValue == "2001:db8::1")
-        #expect(RFC_4291.IPv6.Address(0xABCD, 0xEF01, 0, 0, 0, 0, 0, 1).rawValue == "abcd:ef01::1")
-    }
-
-    @Test
-    func `init(rawValue:) round-trips through the canonical text`() {
-        let cases: [RFC_4291.IPv6.Address] = [
-            .loopback,
-            .unspecified,
-            RFC_4291.IPv6.Address(0x2001, 0x0db8, 0x1234, 0x5678, 0x9abc, 0xdef0, 0x1111, 0x2222),
-            RFC_4291.IPv6.Address(0, 0, 0, 0, 0, 0, 0x8a2e, 0x7334),
-            RFC_4291.IPv6.Address(0xfe80, 0, 0, 0, 0, 0, 0, 1),
-        ]
-        for original in cases {
-            let parsed = RFC_4291.IPv6.Address(rawValue: original.rawValue)
-            #expect(parsed == original)
+        @Test
+        func `description is the canonical RFC 5952 text`() {
+            let addr = RFC_4291.IPv6.Address(0x2001, 0x0db8, 0, 0, 0, 0, 0, 1)
+            #expect(addr.description == "2001:db8::1")
+            #expect(RFC_4291.IPv6.Address.loopback.description == "::1")
+            #expect(RFC_4291.IPv6.Address.unspecified.description == "::")
         }
-    }
 
-    @Test
-    func `init(rawValue:) returns nil for invalid or empty text`() {
-        #expect(RFC_4291.IPv6.Address(rawValue: "not-an-address") == nil)
-        #expect(RFC_4291.IPv6.Address(rawValue: "") == nil)
-    }
+        @Test
+        func `rawValue is the canonical RFC 5952 text`() {
+            let addr = RFC_4291.IPv6.Address(0x2001, 0x0db8, 0, 0, 0, 0, 0, 1)
+            #expect(addr.rawValue == "2001:db8::1")
+            #expect(
+                RFC_4291.IPv6.Address(0xABCD, 0xEF01, 0, 0, 0, 0, 0, 1).rawValue == "abcd:ef01::1"
+            )
+        }
 
-    /// Canonical dual-projection consistency: the typed ASCII text path
-    /// (`[ASCII.Code]`) projects byte-for-byte (`map(\.byte)`) to the
-    /// `.serialized` byte form. Both derive from the single canonical verb.
-    @Test
-    func `asciiCodes map byte equals serialized wire bytes`() {
-        let addr = RFC_4291.IPv6.Address(0x2001, 0x0db8, 0x85a3, 0, 0, 0x8a2e, 0x0370, 0x7334)
-        let ascii = addr.asciiCodes
-        let wire = addr.serialized
-        #expect(ascii.map(\.byte) == wire)
-    }
+        @Test
+        func `init(rawValue:) round-trips through the canonical text`() {
+            let cases: [RFC_4291.IPv6.Address] = [
+                .loopback,
+                .unspecified,
+                RFC_4291.IPv6.Address(
+                    0x2001,
+                    0x0db8,
+                    0x1234,
+                    0x5678,
+                    0x9abc,
+                    0xdef0,
+                    0x1111,
+                    0x2222
+                ),
+                RFC_4291.IPv6.Address(0, 0, 0, 0, 0, 0, 0x8a2e, 0x7334),
+                RFC_4291.IPv6.Address(0xfe80, 0, 0, 0, 0, 0, 0, 1),
+            ]
+            for original in cases {
+                let parsed = RFC_4291.IPv6.Address(rawValue: original.rawValue)
+                #expect(parsed == original)
+            }
+        }
 
-    /// The `@retroactive Codable` conformance encodes the canonical text
-    /// (`description`) into a single-value container and decodes via the RFC 4291
-    /// grammar parser (`init(ascii:)`). Both delegates are tested above; here we
-    /// exercise the conformance through a minimal Foundation-free single-value
-    /// coder (this standards package stays Foundation-free per [PRIM-FOUND-001]).
-    @Test
-    func `Codable encodes the canonical text and decodes it back`() throws {
-        let original = RFC_4291.IPv6.Address(0x2001, 0x0db8, 0, 0, 0, 0, 0, 1)
+        @Test
+        func `init(rawValue:) returns nil for invalid or empty text`() {
+            #expect(RFC_4291.IPv6.Address(rawValue: "not-an-address") == nil)
+            #expect(RFC_4291.IPv6.Address(rawValue: "") == nil)
+        }
 
-        let encoded = SingleStringCoder.encode(original)
-        #expect(encoded == "2001:db8::1")  // canonical text payload
+        /// Canonical dual-projection consistency: the typed ASCII text path
+        /// (`[ASCII.Code]`) projects byte-for-byte (`map(\.byte)`) to the
+        /// `.serialized` byte form. Both derive from the single canonical verb.
+        @Test
+        func `asciiCodes map byte equals serialized wire bytes`() {
+            let addr = RFC_4291.IPv6.Address(0x2001, 0x0db8, 0x85a3, 0, 0, 0x8a2e, 0x0370, 0x7334)
+            let ascii = addr.asciiCodes
+            let wire = addr.serialized
+            #expect(ascii.map(\.byte) == wire)
+        }
 
-        let decoded = try SingleStringCoder.decode(RFC_4291.IPv6.Address.self, from: encoded)
-        #expect(decoded == original)
-    }
+        /// The `@retroactive Codable` conformance encodes the canonical text
+        /// (`description`) into a single-value container and decodes via the RFC 4291
+        /// grammar parser (`init(ascii:)`). Both delegates are tested above; here we
+        /// exercise the conformance through a minimal Foundation-free single-value
+        /// coder (this standards package stays Foundation-free per [PRIM-FOUND-001]).
+        @Test
+        func `Codable encodes the canonical text and decodes it back`() throws {
+            let original = RFC_4291.IPv6.Address(0x2001, 0x0db8, 0, 0, 0, 0, 0, 1)
+
+            let encoded = SingleStringCoder.encode(original)
+            #expect(encoded == "2001:db8::1")  // canonical text payload
+
+            let decoded = try SingleStringCoder.decode(RFC_4291.IPv6.Address.self, from: encoded)
+            #expect(decoded == original)
+        }
     }
 }
 
