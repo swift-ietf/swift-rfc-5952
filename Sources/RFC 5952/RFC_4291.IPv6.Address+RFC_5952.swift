@@ -45,7 +45,7 @@ extension RFC_4291.IPv6.Address: @retroactive ASCII.Serializable {
     ///
     /// Output is `[ASCII.Code]` (the typed text substrate); hex is produced by
     /// `RFC_4648.Base16.encode` (rfc-4648 is a spec-faithful lateral L2→L2 dep).
-    static public func serialize<Buffer>(
+    public static func serialize<Buffer>(
         _ address: RFC_4291.IPv6.Address,
         into buffer: inout Buffer
     ) where Buffer: RangeReplaceableCollection, Buffer.Element == ASCII.Code {
@@ -143,14 +143,21 @@ extension RFC_4291.IPv6.Address: @retroactive Swift.RawRepresentable {
 }
 
 extension RFC_4291.IPv6.Address: @retroactive Encodable {
+    // reason: signature forced by external protocol Swift.Encodable —
+    // encode(to:) requires untyped throws and an existential encoder.
+    // swiftlint:disable no_any_protocol_existential typed_throws_required
     /// Encodes the address as its canonical RFC 5952 text string.
     public func encode(to encoder: any Encoder) throws {
         var container = encoder.singleValueContainer()
         try container.encode(self.description)
     }
+    // swiftlint:enable no_any_protocol_existential typed_throws_required
 }
 
 extension RFC_4291.IPv6.Address: @retroactive Decodable {
+    // reason: signature forced by external protocol Swift.Decodable —
+    // init(from:) requires untyped throws and an existential decoder.
+    // swiftlint:disable no_any_protocol_existential typed_throws_required
     /// Decodes an address from a text string via the RFC 4291 §2.2 grammar.
     public init(from decoder: any Decoder) throws {
         let container = try decoder.singleValueContainer()
@@ -166,4 +173,5 @@ extension RFC_4291.IPv6.Address: @retroactive Decodable {
             )
         }
     }
+    // swiftlint:enable no_any_protocol_existential typed_throws_required
 }
