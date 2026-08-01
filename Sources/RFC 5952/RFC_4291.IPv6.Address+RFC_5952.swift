@@ -85,7 +85,7 @@ extension RFC_4291.IPv6.Address: @retroactive ASCII.Serializable {
 
         var skipNext = false
 
-        for index in 0..<8 {
+        (0..<8).forEach { index in
             // Handle compression
             if shouldCompress && index >= longestZeroRun.start
                 && index < longestZeroRun.start + longestZeroRun.length
@@ -96,7 +96,7 @@ extension RFC_4291.IPv6.Address: @retroactive ASCII.Serializable {
                     buffer.append(.colon)
                     skipNext = true
                 }
-                continue
+                return
             }
 
             // Add colon separator (but not before first segment or after ::)

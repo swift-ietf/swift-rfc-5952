@@ -280,8 +280,12 @@ extension RFC_5952 {
         @Test
         func `rawValue is the canonical RFC 5952 text`() {
             let addr = RFC_4291.IPv6.Address(0x2001, 0x0db8, 0, 0, 0, 0, 0, 1)
+            // swift-linter:disable:next raw value access
+            // REASON: test asserts the RawRepresentable `rawValue` contract directly.
             #expect(addr.rawValue == "2001:db8::1")
             #expect(
+                // swift-linter:disable:next raw value access
+                // REASON: test asserts the RawRepresentable `rawValue` contract directly.
                 RFC_4291.IPv6.Address(0xABCD, 0xEF01, 0, 0, 0, 0, 0, 1).rawValue == "abcd:ef01::1"
             )
         }
@@ -305,6 +309,8 @@ extension RFC_5952 {
                 RFC_4291.IPv6.Address(0xfe80, 0, 0, 0, 0, 0, 0, 1),
             ]
             for original in cases {
+                // swift-linter:disable:next raw value access
+                // REASON: test asserts the RawRepresentable round-trip contract directly.
                 let parsed = RFC_4291.IPv6.Address(rawValue: original.rawValue)
                 #expect(parsed == original)
             }
@@ -355,10 +361,14 @@ private enum SingleStringCoder {}
 extension SingleStringCoder {
     static func encode<T: Encodable>(_ value: T) -> String {
         let encoder = StringEncoder()
+        // swift-linter:disable:next try optional
+        // REASON: Encodable.encode(to:) is an untyped `throws` stdlib protocol requirement on a generic `T`; no typed `E` exists to name.
         try? value.encode(to: encoder)
         return encoder.value ?? ""
     }
 
+    // swift-linter:disable:next untyped throws
+    // REASON: stdlib Encoder/Decoder Codable protocol witness signature mandates untyped `throws`; no typed `E` exists to name.
     static func decode<T: Decodable>(_ type: T.Type, from string: String) throws -> T {
         try T(from: StringDecoder(string))
     }
@@ -385,45 +395,113 @@ extension SingleStringCoder.StringEncoder {
         fatalError("unsupported")
     }
 
+    // swift-linter:disable:next untyped throws
+    // REASON: stdlib Encoder/Decoder Codable protocol witness signature mandates untyped `throws`; no typed `E` exists to name.
     func encodeNil() throws {}
+    // swift-linter:disable:next untyped throws
+    // REASON: stdlib Encoder/Decoder Codable protocol witness signature mandates untyped `throws`; no typed `E` exists to name.
     func encode(_ v: String) throws { value = v }
+    // swift-linter:disable:next untyped throws
+    // REASON: stdlib Encoder/Decoder Codable protocol witness signature mandates untyped `throws`; no typed `E` exists to name.
     func encode(_ v: Bool) throws { fatalError("unsupported") }
+    // swift-linter:disable:next untyped throws
+    // REASON: stdlib Encoder/Decoder Codable protocol witness signature mandates untyped `throws`; no typed `E` exists to name.
     func encode(_ v: Double) throws { fatalError("unsupported") }
+    // swift-linter:disable:next untyped throws
+    // REASON: stdlib Encoder/Decoder Codable protocol witness signature mandates untyped `throws`; no typed `E` exists to name.
     func encode(_ v: Float) throws { fatalError("unsupported") }
+    // swift-linter:disable:next untyped throws
+    // REASON: stdlib Encoder/Decoder Codable protocol witness signature mandates untyped `throws`; no typed `E` exists to name.
     func encode(_ v: Int) throws { fatalError("unsupported") }
+    // swift-linter:disable:next untyped throws
+    // REASON: stdlib Encoder/Decoder Codable protocol witness signature mandates untyped `throws`; no typed `E` exists to name.
     func encode(_ v: Int8) throws { fatalError("unsupported") }
+    // swift-linter:disable:next untyped throws
+    // REASON: stdlib Encoder/Decoder Codable protocol witness signature mandates untyped `throws`; no typed `E` exists to name.
     func encode(_ v: Int16) throws { fatalError("unsupported") }
+    // swift-linter:disable:next untyped throws
+    // REASON: stdlib Encoder/Decoder Codable protocol witness signature mandates untyped `throws`; no typed `E` exists to name.
     func encode(_ v: Int32) throws { fatalError("unsupported") }
+    // swift-linter:disable:next untyped throws
+    // REASON: stdlib Encoder/Decoder Codable protocol witness signature mandates untyped `throws`; no typed `E` exists to name.
     func encode(_ v: Int64) throws { fatalError("unsupported") }
+    // swift-linter:disable:next untyped throws
+    // REASON: stdlib Encoder/Decoder Codable protocol witness signature mandates untyped `throws`; no typed `E` exists to name.
     func encode(_ v: UInt) throws { fatalError("unsupported") }
+    // swift-linter:disable:next untyped throws
+    // REASON: stdlib Encoder/Decoder Codable protocol witness signature mandates untyped `throws`; no typed `E` exists to name.
     func encode(_ v: UInt8) throws { fatalError("unsupported") }
+    // swift-linter:disable:next untyped throws
+    // REASON: stdlib Encoder/Decoder Codable protocol witness signature mandates untyped `throws`; no typed `E` exists to name.
     func encode(_ v: UInt16) throws { fatalError("unsupported") }
+    // swift-linter:disable:next untyped throws
+    // REASON: stdlib Encoder/Decoder Codable protocol witness signature mandates untyped `throws`; no typed `E` exists to name.
     func encode(_ v: UInt32) throws { fatalError("unsupported") }
+    // swift-linter:disable:next untyped throws
+    // REASON: stdlib Encoder/Decoder Codable protocol witness signature mandates untyped `throws`; no typed `E` exists to name.
     func encode(_ v: UInt64) throws { fatalError("unsupported") }
+    // swift-linter:disable:next untyped throws
+    // REASON: stdlib Encoder/Decoder Codable protocol witness signature mandates untyped `throws`; no typed `E` exists to name.
     func encode<T: Encodable>(_ v: T) throws { try v.encode(to: self) }
 }
 
 extension SingleStringCoder.StringDecoder {
+    // swift-linter:disable:next untyped throws
+    // REASON: stdlib Encoder/Decoder Codable protocol witness signature mandates untyped `throws`; no typed `E` exists to name.
     func singleValueContainer() throws -> SingleValueDecodingContainer { self }
+    // swift-linter:disable:next untyped throws
+    // REASON: stdlib Encoder/Decoder Codable protocol witness signature mandates untyped `throws`; no typed `E` exists to name.
     func unkeyedContainer() throws -> UnkeyedDecodingContainer { fatalError("unsupported") }
+    // swift-linter:disable:next untyped throws
+    // REASON: stdlib Encoder/Decoder Codable protocol witness signature mandates untyped `throws`; no typed `E` exists to name.
     func container<Key>(keyedBy: Key.Type) throws -> KeyedDecodingContainer<Key> {
         fatalError("unsupported")
     }
 
     func decodeNil() -> Bool { false }
+    // swift-linter:disable:next untyped throws
+    // REASON: stdlib Encoder/Decoder Codable protocol witness signature mandates untyped `throws`; no typed `E` exists to name.
     func decode(_ type: String.Type) throws -> String { string }
+    // swift-linter:disable:next untyped throws
+    // REASON: stdlib Encoder/Decoder Codable protocol witness signature mandates untyped `throws`; no typed `E` exists to name.
     func decode(_ type: Bool.Type) throws -> Bool { fatalError("unsupported") }
+    // swift-linter:disable:next untyped throws
+    // REASON: stdlib Encoder/Decoder Codable protocol witness signature mandates untyped `throws`; no typed `E` exists to name.
     func decode(_ type: Double.Type) throws -> Double { fatalError("unsupported") }
+    // swift-linter:disable:next untyped throws
+    // REASON: stdlib Encoder/Decoder Codable protocol witness signature mandates untyped `throws`; no typed `E` exists to name.
     func decode(_ type: Float.Type) throws -> Float { fatalError("unsupported") }
+    // swift-linter:disable:next untyped throws
+    // REASON: stdlib Encoder/Decoder Codable protocol witness signature mandates untyped `throws`; no typed `E` exists to name.
     func decode(_ type: Int.Type) throws -> Int { fatalError("unsupported") }
+    // swift-linter:disable:next untyped throws
+    // REASON: stdlib Encoder/Decoder Codable protocol witness signature mandates untyped `throws`; no typed `E` exists to name.
     func decode(_ type: Int8.Type) throws -> Int8 { fatalError("unsupported") }
+    // swift-linter:disable:next untyped throws
+    // REASON: stdlib Encoder/Decoder Codable protocol witness signature mandates untyped `throws`; no typed `E` exists to name.
     func decode(_ type: Int16.Type) throws -> Int16 { fatalError("unsupported") }
+    // swift-linter:disable:next untyped throws
+    // REASON: stdlib Encoder/Decoder Codable protocol witness signature mandates untyped `throws`; no typed `E` exists to name.
     func decode(_ type: Int32.Type) throws -> Int32 { fatalError("unsupported") }
+    // swift-linter:disable:next untyped throws
+    // REASON: stdlib Encoder/Decoder Codable protocol witness signature mandates untyped `throws`; no typed `E` exists to name.
     func decode(_ type: Int64.Type) throws -> Int64 { fatalError("unsupported") }
+    // swift-linter:disable:next untyped throws
+    // REASON: stdlib Encoder/Decoder Codable protocol witness signature mandates untyped `throws`; no typed `E` exists to name.
     func decode(_ type: UInt.Type) throws -> UInt { fatalError("unsupported") }
+    // swift-linter:disable:next untyped throws
+    // REASON: stdlib Encoder/Decoder Codable protocol witness signature mandates untyped `throws`; no typed `E` exists to name.
     func decode(_ type: UInt8.Type) throws -> UInt8 { fatalError("unsupported") }
+    // swift-linter:disable:next untyped throws
+    // REASON: stdlib Encoder/Decoder Codable protocol witness signature mandates untyped `throws`; no typed `E` exists to name.
     func decode(_ type: UInt16.Type) throws -> UInt16 { fatalError("unsupported") }
+    // swift-linter:disable:next untyped throws
+    // REASON: stdlib Encoder/Decoder Codable protocol witness signature mandates untyped `throws`; no typed `E` exists to name.
     func decode(_ type: UInt32.Type) throws -> UInt32 { fatalError("unsupported") }
+    // swift-linter:disable:next untyped throws
+    // REASON: stdlib Encoder/Decoder Codable protocol witness signature mandates untyped `throws`; no typed `E` exists to name.
     func decode(_ type: UInt64.Type) throws -> UInt64 { fatalError("unsupported") }
+    // swift-linter:disable:next untyped throws
+    // REASON: stdlib Encoder/Decoder Codable protocol witness signature mandates untyped `throws`; no typed `E` exists to name.
     func decode<T: Decodable>(_ type: T.Type) throws -> T { try T(from: self) }
 }
