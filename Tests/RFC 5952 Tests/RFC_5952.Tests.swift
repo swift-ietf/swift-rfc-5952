@@ -1,30 +1,13 @@
-// ===----------------------------------------------------------------------===//
-//
-// Copyright (c) 2025 Coen ten Thije Boonkkamp
-// Licensed under Apache License v2.0
-//
-// See LICENSE.txt for license information
-// See CONTRIBUTORS.txt for the list of project contributors
-//
-// SPDX-License-Identifier: Apache-2.0
-//
-// ===----------------------------------------------------------------------===//
-
 import Testing
 
 @testable import RFC_4291
 @testable import RFC_5952
 
-// MARK: - Merged into RFC_5952.Test (SWIFT-TEST-002 collision: no leftover
-// distinguishing token after stripping "RFC5952"/"Tests"; members verified
-// trivially disjoint by name from the pre-existing RFC_5952.Test suite below).
 extension RFC_5952.Test {
-
-    // MARK: - RFC 5952 Section 4.1: Leading Zeros
 
     @Test
     func `RFC 5952 Section 4.1: Leading zeros MUST be suppressed`() throws {
-        // 2001:0db8:0000:0000:0000:0000:0000:0001 → 2001:db8::1
+
         let address = RFC_4291.IPv6.Address(
             0x2001,
             0x0db8,
@@ -38,15 +21,13 @@ extension RFC_5952.Test {
         let text = String(address)
 
         #expect(text == "2001:db8::1")
-        #expect(!text.contains("0db8"))  // No leading zero
-        #expect(!text.contains("0001"))  // No leading zeros
+        #expect(!text.contains("0db8"))
+        #expect(!text.contains("0001"))
     }
-
-    // MARK: - RFC 5952 Section 4.2: :: Usage
 
     @Test
     func `RFC 5952 Section 4.2.1: :: MUST be used for longest zero run`() throws {
-        // Multiple zero runs, longest should be compressed
+
         let address = RFC_4291.IPv6.Address(
             0x2001,
             0x0db8,
@@ -59,13 +40,12 @@ extension RFC_5952.Test {
         )
         let text = String(address)
 
-        // The run of 3 zeros (indices 2-4) should be compressed
         #expect(text == "2001:db8::1:0:1")
     }
 
     @Test
     func `RFC 5952 Section 4.2.2: Single zero MUST NOT use ::`() throws {
-        // Single zeros should be represented as "0", not "::"
+
         let address = RFC_4291.IPv6.Address(
             0x2001,
             0x0db8,
@@ -79,12 +59,12 @@ extension RFC_5952.Test {
         let text = String(address)
 
         #expect(text == "2001:db8:0:1:0:2:0:3")
-        #expect(!text.contains("::"))  // No compression for single zeros
+        #expect(!text.contains("::"))
     }
 
     @Test
     func `RFC 5952 Section 4.2.3: Choose first occurrence when multiple equal runs`() throws {
-        // Two runs of 2 zeros each - first should be compressed
+
         let address = RFC_4291.IPv6.Address(
             0x2001,
             0x0000,
@@ -97,11 +77,8 @@ extension RFC_5952.Test {
         )
         let text = String(address)
 
-        // The first run (indices 1-2) should be compressed
         #expect(text == "2001::1:0:0:1:1")
     }
-
-    // MARK: - RFC 5952 Section 4.3: Lowercase
 
     @Test
     func `RFC 5952 Section 4.3: Hexadecimal digits MUST be lowercase`() throws {
@@ -118,7 +95,7 @@ extension RFC_5952.Test {
         let text = String(address)
 
         #expect(text == "2001:db8:abc:def::1")
-        #expect(text.lowercased() == text)  // Must be all lowercase
+        #expect(text.lowercased() == text)
         #expect(!text.contains("A"))
         #expect(!text.contains("B"))
         #expect(!text.contains("C"))
@@ -126,8 +103,6 @@ extension RFC_5952.Test {
         #expect(!text.contains("E"))
         #expect(!text.contains("F"))
     }
-
-    // MARK: - Well-Known Addresses
 
     @Test
     func `Unspecified address (::)`() throws {
@@ -147,7 +122,7 @@ extension RFC_5952.Test {
 
     @Test
     func `IPv4-mapped IPv6 address`() throws {
-        // ::ffff:192.0.2.1 (in pure IPv6 notation)
+
         let address = RFC_4291.IPv6.Address(0, 0, 0, 0, 0, 0xffff, 0xc000, 0x0201)
         let text = String(address)
 
@@ -177,8 +152,6 @@ extension RFC_5952.Test {
 
         #expect(text == "ff02::1")
     }
-
-    // MARK: - Edge Cases
 
     @Test
     func `No compression needed - no zero runs`() throws {
@@ -239,14 +212,11 @@ extension RFC_5952.Test {
         #expect(text == "ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff")
     }
 
-    // MARK: - Canonicalization Examples from RFC 5952
-
     @Test
     func `RFC 5952 Example: 2001:db8:0:0:1:0:0:1`() throws {
         let address = RFC_4291.IPv6.Address(0x2001, 0x0db8, 0, 0, 1, 0, 0, 1)
         let text = String(address)
 
-        // Longest run is 2 zeros at position 2-3
         #expect(text == "2001:db8::1:0:0:1")
     }
 
@@ -259,12 +229,6 @@ extension RFC_5952.Test {
     }
 }
 
-// MARK: - Canonical text surface (retroactive conformances — moved from rfc-4291)
-
-/// The RFC 5952 canonical text *serialization* surface for `RFC_4291.IPv6.Address`
-/// lives in this package (DECISION 3, Option B): `ASCII.Serializable`,
-/// `description`, `rawValue`, and `Codable` are all retroactive conformances that
-/// route through the single canonical verb.
 extension RFC_5952 {
     @Suite("RFC 5952 canonical text surface")
     struct Test {
@@ -280,12 +244,10 @@ extension RFC_5952 {
         @Test
         func `rawValue is the canonical RFC 5952 text`() {
             let addr = RFC_4291.IPv6.Address(0x2001, 0x0db8, 0, 0, 0, 0, 0, 1)
-            // swift-linter:disable:next raw value access
-            // REASON: test asserts the RawRepresentable `rawValue` contract directly.
+
             #expect(addr.rawValue == "2001:db8::1")
             #expect(
-                // swift-linter:disable:next raw value access
-                // REASON: test asserts the RawRepresentable `rawValue` contract directly.
+
                 RFC_4291.IPv6.Address(0xABCD, 0xEF01, 0, 0, 0, 0, 0, 1).rawValue == "abcd:ef01::1"
             )
         }
@@ -309,8 +271,7 @@ extension RFC_5952 {
                 RFC_4291.IPv6.Address(0xfe80, 0, 0, 0, 0, 0, 0, 1),
             ]
             for original in cases {
-                // swift-linter:disable:next raw value access
-                // REASON: test asserts the RawRepresentable round-trip contract directly.
+
                 let parsed = RFC_4291.IPv6.Address(rawValue: original.rawValue)
                 #expect(parsed == original)
             }
@@ -322,9 +283,6 @@ extension RFC_5952 {
             #expect(RFC_4291.IPv6.Address(rawValue: "") == nil)
         }
 
-        /// Canonical dual-projection consistency: the typed ASCII text path
-        /// (`[ASCII.Code]`) projects byte-for-byte (`map(\.byte)`) to the
-        /// `.serialized` byte form. Both derive from the single canonical verb.
         @Test
         func `asciiCodes map byte equals serialized wire bytes`() {
             let addr = RFC_4291.IPv6.Address(0x2001, 0x0db8, 0x85a3, 0, 0, 0x8a2e, 0x0370, 0x7334)
@@ -333,17 +291,12 @@ extension RFC_5952 {
             #expect(ascii.map(\.byte) == wire)
         }
 
-        /// The `@retroactive Codable` conformance encodes the canonical text
-        /// (`description`) into a single-value container and decodes via the RFC 4291
-        /// grammar parser (`init(ascii:)`). Both delegates are tested above; here we
-        /// exercise the conformance through a minimal Foundation-free single-value
-        /// coder (this standards package stays Foundation-free per [PRIM-FOUND-001]).
         @Test
         func `Codable encodes the canonical text and decodes it back`() throws {
             let original = RFC_4291.IPv6.Address(0x2001, 0x0db8, 0, 0, 0, 0, 0, 1)
 
             let encoded = SingleStringCoder.encode(original)
-            #expect(encoded == "2001:db8::1")  // canonical text payload
+            #expect(encoded == "2001:db8::1")
 
             let decoded = try SingleStringCoder.decode(RFC_4291.IPv6.Address.self, from: encoded)
             #expect(decoded == original)
@@ -351,24 +304,16 @@ extension RFC_5952 {
     }
 }
 
-// MARK: - Foundation-free single-value string coder (test support)
-
-/// Minimal `Encoder`/`Decoder` that carries a single `String` value, used to
-/// exercise a `Codable` conformance whose single-value payload is a string —
-/// without importing Foundation into this standards test target.
 private enum SingleStringCoder {}
 
 extension SingleStringCoder {
     static func encode<T: Encodable>(_ value: T) -> String {
         let encoder = StringEncoder()
-        // swift-linter:disable:next try optional
-        // REASON: Encodable.encode(to:) is an untyped `throws` stdlib protocol requirement on a generic `T`; no typed `E` exists to name.
+
         try? value.encode(to: encoder)
         return encoder.value ?? ""
     }
 
-    // swift-linter:disable:next untyped throws
-    // REASON: stdlib Encoder/Decoder Codable protocol witness signature mandates untyped `throws`; no typed `E` exists to name.
     static func decode<T: Decodable>(_ type: T.Type, from string: String) throws -> T {
         try T(from: StringDecoder(string))
     }
@@ -395,113 +340,78 @@ extension SingleStringCoder.StringEncoder {
         fatalError("unsupported")
     }
 
-    // swift-linter:disable:next untyped throws
-    // REASON: stdlib Encoder/Decoder Codable protocol witness signature mandates untyped `throws`; no typed `E` exists to name.
     func encodeNil() throws {}
-    // swift-linter:disable:next untyped throws
-    // REASON: stdlib Encoder/Decoder Codable protocol witness signature mandates untyped `throws`; no typed `E` exists to name.
+
     func encode(_ v: String) throws { value = v }
-    // swift-linter:disable:next untyped throws
-    // REASON: stdlib Encoder/Decoder Codable protocol witness signature mandates untyped `throws`; no typed `E` exists to name.
+
     func encode(_ v: Bool) throws { fatalError("unsupported") }
-    // swift-linter:disable:next untyped throws
-    // REASON: stdlib Encoder/Decoder Codable protocol witness signature mandates untyped `throws`; no typed `E` exists to name.
+
     func encode(_ v: Double) throws { fatalError("unsupported") }
-    // swift-linter:disable:next untyped throws
-    // REASON: stdlib Encoder/Decoder Codable protocol witness signature mandates untyped `throws`; no typed `E` exists to name.
+
     func encode(_ v: Float) throws { fatalError("unsupported") }
-    // swift-linter:disable:next untyped throws
-    // REASON: stdlib Encoder/Decoder Codable protocol witness signature mandates untyped `throws`; no typed `E` exists to name.
+
     func encode(_ v: Int) throws { fatalError("unsupported") }
-    // swift-linter:disable:next untyped throws
-    // REASON: stdlib Encoder/Decoder Codable protocol witness signature mandates untyped `throws`; no typed `E` exists to name.
+
     func encode(_ v: Int8) throws { fatalError("unsupported") }
-    // swift-linter:disable:next untyped throws
-    // REASON: stdlib Encoder/Decoder Codable protocol witness signature mandates untyped `throws`; no typed `E` exists to name.
+
     func encode(_ v: Int16) throws { fatalError("unsupported") }
-    // swift-linter:disable:next untyped throws
-    // REASON: stdlib Encoder/Decoder Codable protocol witness signature mandates untyped `throws`; no typed `E` exists to name.
+
     func encode(_ v: Int32) throws { fatalError("unsupported") }
-    // swift-linter:disable:next untyped throws
-    // REASON: stdlib Encoder/Decoder Codable protocol witness signature mandates untyped `throws`; no typed `E` exists to name.
+
     func encode(_ v: Int64) throws { fatalError("unsupported") }
-    // swift-linter:disable:next untyped throws
-    // REASON: stdlib Encoder/Decoder Codable protocol witness signature mandates untyped `throws`; no typed `E` exists to name.
+
     func encode(_ v: UInt) throws { fatalError("unsupported") }
-    // swift-linter:disable:next untyped throws
-    // REASON: stdlib Encoder/Decoder Codable protocol witness signature mandates untyped `throws`; no typed `E` exists to name.
+
     func encode(_ v: UInt8) throws { fatalError("unsupported") }
-    // swift-linter:disable:next untyped throws
-    // REASON: stdlib Encoder/Decoder Codable protocol witness signature mandates untyped `throws`; no typed `E` exists to name.
+
     func encode(_ v: UInt16) throws { fatalError("unsupported") }
-    // swift-linter:disable:next untyped throws
-    // REASON: stdlib Encoder/Decoder Codable protocol witness signature mandates untyped `throws`; no typed `E` exists to name.
+
     func encode(_ v: UInt32) throws { fatalError("unsupported") }
-    // swift-linter:disable:next untyped throws
-    // REASON: stdlib Encoder/Decoder Codable protocol witness signature mandates untyped `throws`; no typed `E` exists to name.
+
     func encode(_ v: UInt64) throws { fatalError("unsupported") }
-    // swift-linter:disable:next untyped throws
-    // REASON: stdlib Encoder/Decoder Codable protocol witness signature mandates untyped `throws`; no typed `E` exists to name.
+
     func encode<T: Encodable>(_ v: T) throws { try v.encode(to: self) }
 }
 
 extension SingleStringCoder.StringDecoder {
-    // swift-linter:disable:next untyped throws
-    // REASON: stdlib Encoder/Decoder Codable protocol witness signature mandates untyped `throws`; no typed `E` exists to name.
+
     func singleValueContainer() throws -> SingleValueDecodingContainer { self }
-    // swift-linter:disable:next untyped throws
-    // REASON: stdlib Encoder/Decoder Codable protocol witness signature mandates untyped `throws`; no typed `E` exists to name.
+
     func unkeyedContainer() throws -> UnkeyedDecodingContainer { fatalError("unsupported") }
-    // swift-linter:disable:next untyped throws
-    // REASON: stdlib Encoder/Decoder Codable protocol witness signature mandates untyped `throws`; no typed `E` exists to name.
+
     func container<Key>(keyedBy: Key.Type) throws -> KeyedDecodingContainer<Key> {
         fatalError("unsupported")
     }
 
     func decodeNil() -> Bool { false }
-    // swift-linter:disable:next untyped throws
-    // REASON: stdlib Encoder/Decoder Codable protocol witness signature mandates untyped `throws`; no typed `E` exists to name.
+
     func decode(_ type: String.Type) throws -> String { string }
-    // swift-linter:disable:next untyped throws
-    // REASON: stdlib Encoder/Decoder Codable protocol witness signature mandates untyped `throws`; no typed `E` exists to name.
+
     func decode(_ type: Bool.Type) throws -> Bool { fatalError("unsupported") }
-    // swift-linter:disable:next untyped throws
-    // REASON: stdlib Encoder/Decoder Codable protocol witness signature mandates untyped `throws`; no typed `E` exists to name.
+
     func decode(_ type: Double.Type) throws -> Double { fatalError("unsupported") }
-    // swift-linter:disable:next untyped throws
-    // REASON: stdlib Encoder/Decoder Codable protocol witness signature mandates untyped `throws`; no typed `E` exists to name.
+
     func decode(_ type: Float.Type) throws -> Float { fatalError("unsupported") }
-    // swift-linter:disable:next untyped throws
-    // REASON: stdlib Encoder/Decoder Codable protocol witness signature mandates untyped `throws`; no typed `E` exists to name.
+
     func decode(_ type: Int.Type) throws -> Int { fatalError("unsupported") }
-    // swift-linter:disable:next untyped throws
-    // REASON: stdlib Encoder/Decoder Codable protocol witness signature mandates untyped `throws`; no typed `E` exists to name.
+
     func decode(_ type: Int8.Type) throws -> Int8 { fatalError("unsupported") }
-    // swift-linter:disable:next untyped throws
-    // REASON: stdlib Encoder/Decoder Codable protocol witness signature mandates untyped `throws`; no typed `E` exists to name.
+
     func decode(_ type: Int16.Type) throws -> Int16 { fatalError("unsupported") }
-    // swift-linter:disable:next untyped throws
-    // REASON: stdlib Encoder/Decoder Codable protocol witness signature mandates untyped `throws`; no typed `E` exists to name.
+
     func decode(_ type: Int32.Type) throws -> Int32 { fatalError("unsupported") }
-    // swift-linter:disable:next untyped throws
-    // REASON: stdlib Encoder/Decoder Codable protocol witness signature mandates untyped `throws`; no typed `E` exists to name.
+
     func decode(_ type: Int64.Type) throws -> Int64 { fatalError("unsupported") }
-    // swift-linter:disable:next untyped throws
-    // REASON: stdlib Encoder/Decoder Codable protocol witness signature mandates untyped `throws`; no typed `E` exists to name.
+
     func decode(_ type: UInt.Type) throws -> UInt { fatalError("unsupported") }
-    // swift-linter:disable:next untyped throws
-    // REASON: stdlib Encoder/Decoder Codable protocol witness signature mandates untyped `throws`; no typed `E` exists to name.
+
     func decode(_ type: UInt8.Type) throws -> UInt8 { fatalError("unsupported") }
-    // swift-linter:disable:next untyped throws
-    // REASON: stdlib Encoder/Decoder Codable protocol witness signature mandates untyped `throws`; no typed `E` exists to name.
+
     func decode(_ type: UInt16.Type) throws -> UInt16 { fatalError("unsupported") }
-    // swift-linter:disable:next untyped throws
-    // REASON: stdlib Encoder/Decoder Codable protocol witness signature mandates untyped `throws`; no typed `E` exists to name.
+
     func decode(_ type: UInt32.Type) throws -> UInt32 { fatalError("unsupported") }
-    // swift-linter:disable:next untyped throws
-    // REASON: stdlib Encoder/Decoder Codable protocol witness signature mandates untyped `throws`; no typed `E` exists to name.
+
     func decode(_ type: UInt64.Type) throws -> UInt64 { fatalError("unsupported") }
-    // swift-linter:disable:next untyped throws
-    // REASON: stdlib Encoder/Decoder Codable protocol witness signature mandates untyped `throws`; no typed `E` exists to name.
+
     func decode<T: Decodable>(_ type: T.Type) throws -> T { try T(from: self) }
 }
