@@ -14,8 +14,8 @@ extension Target.Dependency {
         package: "swift-standard-library-extensions"
     )
     static let incits41986 = Self.product(
-        name: "ASCII Primitives",
-        package: "swift-ascii-primitives"
+        name: "ASCII",
+        package: "swift-ascii"
     )
     static let rfc4648 = Self.product(name: "RFC 4648", package: "swift-rfc-4648")
 }
@@ -34,11 +34,11 @@ let package = Package(
     dependencies: [
         .package(url: "https://github.com/swift-ietf/swift-rfc-4291.git", branch: "main"),
         .package(
-            url: "https://github.com/swift-primitives/swift-standard-library-extensions.git",
+            url: "https://github.com/swift-molecules/swift-standard-library-extensions.git",
             branch: "main"
         ),
         .package(
-            url: "https://github.com/swift-primitives/swift-ascii-primitives.git",
+            url: "https://github.com/swift-molecules/swift-ascii.git",
             branch: "main"
         ),
         .package(url: "https://github.com/swift-ietf/swift-rfc-4648.git", branch: "main"),
