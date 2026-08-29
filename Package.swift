@@ -34,7 +34,7 @@ let package = Package(
     dependencies: [
         .package(url: "https://github.com/swift-ietf/swift-rfc-4291.git", branch: "main"),
         .package(
-            url: "https://github.com/swift-molecules/swift-standard-library-extensions.git",
+            url: "https://github.com/swift-atoms/swift-standard-library-extensions.git",
             branch: "main"
         ),
         .package(
