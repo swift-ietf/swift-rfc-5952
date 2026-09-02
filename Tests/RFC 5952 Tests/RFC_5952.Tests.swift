@@ -334,8 +334,8 @@ extension SingleStringCoder {
 }
 
 extension SingleStringCoder.StringEncoder {
-    func singleValueContainer() -> SingleValueEncodingContainer { self }
-    func unkeyedContainer() -> UnkeyedEncodingContainer { fatalError("unsupported") }
+    func singleValueContainer() -> any SingleValueEncodingContainer { self }
+    func unkeyedContainer() -> any UnkeyedEncodingContainer { fatalError("unsupported") }
     func container<Key>(keyedBy: Key.Type) -> KeyedEncodingContainer<Key> {
         fatalError("unsupported")
     }
@@ -375,9 +375,9 @@ extension SingleStringCoder.StringEncoder {
 
 extension SingleStringCoder.StringDecoder {
 
-    func singleValueContainer() throws -> SingleValueDecodingContainer { self }
+    func singleValueContainer() throws -> any SingleValueDecodingContainer { self }
 
-    func unkeyedContainer() throws -> UnkeyedDecodingContainer { fatalError("unsupported") }
+    func unkeyedContainer() throws -> any UnkeyedDecodingContainer { fatalError("unsupported") }
 
     func container<Key>(keyedBy: Key.Type) throws -> KeyedDecodingContainer<Key> {
         fatalError("unsupported")

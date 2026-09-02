@@ -79,7 +79,7 @@ extension RFC_4291.IPv6.Address: @retroactive Swift.RawRepresentable {
 
     public init?(rawValue: String) {
         do throws(RFC_4291.IPv6.Address.Error) {
-            try self.init(ascii: [Byte](rawValue.utf8))
+            try self.init(ascii: rawValue.utf8.map(Byte.init(bitPattern:)))
         } catch {
             return nil
         }
@@ -100,7 +100,7 @@ extension RFC_4291.IPv6.Address: @retroactive Decodable {
         let container = try decoder.singleValueContainer()
         let string = try container.decode(String.self)
         do throws(RFC_4291.IPv6.Address.Error) {
-            try self.init(ascii: [Byte](string.utf8))
+            try self.init(ascii: string.utf8.map(Byte.init(bitPattern:)))
         } catch {
             throw DecodingError.dataCorrupted(
                 DecodingError.Context(
