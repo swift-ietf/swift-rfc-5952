@@ -1,4 +1,4 @@
-import RFC_4291
+public import RFC_4291
 
 extension String {
 

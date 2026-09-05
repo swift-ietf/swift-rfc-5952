@@ -1,5 +1,8 @@
-import RFC_4291
-public import RFC_4648
+public import ASCII
+public import RFC_4291
+public import Serializable_ASCII
+import Byte
+import RFC_4648
 
 extension RFC_4291.IPv6.Address: @retroactive ASCII.Serializable {
 
