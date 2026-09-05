@@ -2,7 +2,7 @@
 
 ![Development Status](https://img.shields.io/badge/status-active--development-blue.svg)
 
-Canonical text representation of IPv6 addresses per RFC 5952.
+The zero-compression rule of the canonical IPv6 address text representation per RFC 5952. The text itself is written by `swift-rfc-5952-coder`.
 
 ## Standard Reference
 

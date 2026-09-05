@@ -13,24 +13,13 @@ let package = Package(
         .library(name: "RFC 5952", targets: ["RFC 5952"])
     ],
     dependencies: [
-        .package(url: "https://github.com/swift-ietf/swift-rfc-4291.git", branch: "main"),
-        .package(url: "https://github.com/swift-ietf/swift-rfc-4648.git", branch: "main"),
-        .package(url: "https://github.com/swift-atoms/swift-ascii.git", branch: "main"),
-        .package(url: "https://github.com/swift-atoms/swift-byte.git", branch: "main"),
-        .package(
-            url: "https://github.com/swift-molecules/swift-ascii-serializer.git",
-            branch: "main"
-        ),
+        .package(url: "https://github.com/swift-ietf/swift-rfc-4291.git", branch: "main")
     ],
     targets: [
         .target(
             name: "RFC 5952",
             dependencies: [
-                .product(name: "RFC 4291", package: "swift-rfc-4291"),
-                .product(name: "RFC 4648", package: "swift-rfc-4648"),
-                .product(name: "ASCII", package: "swift-ascii"),
-                .product(name: "Byte", package: "swift-byte"),
-                .product(name: "Serializable ASCII", package: "swift-ascii-serializer"),
+                .product(name: "RFC 4291", package: "swift-rfc-4291")
             ]
         ),
         .testTarget(
@@ -38,8 +27,6 @@ let package = Package(
             dependencies: [
                 "RFC 5952",
                 .product(name: "RFC 4291", package: "swift-rfc-4291"),
-                .product(name: "ASCII", package: "swift-ascii"),
-                .product(name: "Serializable ASCII", package: "swift-ascii-serializer"),
             ]
         ),
     ],
