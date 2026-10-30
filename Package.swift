@@ -13,14 +13,34 @@ let package = Package(
     products: [
         .library(name: "RFC 5952", targets: ["RFC 5952"])
     ],
+    traits: [
+        .trait(name: "Coder", description: "Wire coders for RFC 5952 types")
+    ],
     dependencies: [
-        .package(url: "https://github.com/swift-ietf/swift-rfc-4291.git", branch: "main")
+        .package(
+            url: "https://github.com/swift-ietf/swift-rfc-4291.git",
+            branch: "main",
+            traits: [.trait(name: "Coder", condition: .when(traits: ["Coder"]))]
+        ),
+        .package(
+            url: "https://github.com/swift-atoms/swift-ascii.git",
+            branch: "main",
+            traits: [
+                .trait(name: "Parser", condition: .when(traits: ["Coder"])),
+                .trait(name: "Serializer", condition: .when(traits: ["Coder"])),
+            ]
+        ),
+        .package(url: "https://github.com/swift-ietf/swift-rfc-4648.git", branch: "main"),
+        .package(url: "https://github.com/swift-atoms/swift-serializer.git", branch: "main"),
     ],
     targets: [
         .target(
             name: "RFC 5952",
             dependencies: [
-                .product(name: "RFC 4291", package: "swift-rfc-4291")
+                .product(name: "RFC 4291", package: "swift-rfc-4291"),
+                .product(name: "ASCII", package: "swift-ascii", condition: .when(traits: ["Coder"])),
+                .product(name: "RFC 4648", package: "swift-rfc-4648", condition: .when(traits: ["Coder"])),
+                .product(name: "Serializer", package: "swift-serializer", condition: .when(traits: ["Coder"])),
             ]
         ),
         .testTarget(
@@ -28,6 +48,8 @@ let package = Package(
             dependencies: [
                 .target(name: "RFC 5952"),
                 .product(name: "RFC 4291", package: "swift-rfc-4291"),
+                .product(name: "ASCII", package: "swift-ascii", condition: .when(traits: ["Coder"])),
+                .product(name: "Serializer", package: "swift-serializer", condition: .when(traits: ["Coder"])),
             ]
         ),
     ],
