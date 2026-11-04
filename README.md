@@ -1,35 +1,11 @@
 # swift-rfc-5952
 
-![Development Status](https://img.shields.io/badge/status-active--development-blue.svg)
+Use this package when you need the one canonical text form of an IPv6 address, for display, logs or comparing addresses as text. Start from `RFC_4291.IPv6.Address.Text.Canonical` to write the text, or from `RFC_5952.Compression` if you only need to know which zero fields collapse. For the address type itself and parsing, use swift-rfc-4291. For one namespace that combines both with scoped addresses, use swift-ipv6-standard.
 
-The zero-compression rule of the canonical IPv6 address text representation per RFC 5952. The text itself is written by `swift-rfc-5952-coder`.
+## Laws
 
-## Standard Reference
-
-- **RFC**: 5952
-- **Title**: A Recommendation for IPv6 Address Text Representation
-
-## Installation
-
-Add the package to your `Package.swift` dependencies:
-
-```swift
-dependencies: [
-    .package(url: "https://github.com/swift-ietf/swift-rfc-5952.git", from: "0.1.5")
-]
-```
-
-Add the product to a target that needs it:
-
-```swift
-.target(
-    name: "YourTarget",
-    dependencies: [
-        .product(name: "RFC 5952", package: "swift-rfc-5952")
-    ]
-)
-```
-
-## License
-
-Apache 2.0. See [LICENSE.md](LICENSE.md).
+- Only the longest run of zero fields is compressed. A single zero field is never compressed, and an address with no run of two or more zero fields has no `RFC_5952.Compression`.
+- When two runs of zero fields are equally long, the first one is compressed.
+- `RFC_5952.Compression.start` counts fields from 0, and `RFC_5952.Compression.range` covers exactly the compressed fields, so `RFC_5952.Compression.end` is the first field after the run.
+- The canonical text writes hexadecimal digits in lowercase, drops leading zeros in each field, and writes the compressed run as a double colon. The unspecified address is a bare double colon, and the loopback address is a double colon followed by 1.
+- An IPv4-mapped address keeps its last two fields in hexadecimal, as in `::ffff:c000:201`, not in dotted-decimal form.
