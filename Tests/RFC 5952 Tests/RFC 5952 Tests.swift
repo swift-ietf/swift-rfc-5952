@@ -2,13 +2,19 @@ import RFC_4291
 import RFC_5952
 import Testing
 
-@Suite
-struct `RFC 5952 Tests` {
+extension `RFC 5952 Tests`.`RFC 5952 Tests` {
+    @Suite
+    struct `RFC 5952 Tests` {
+    }
+}
+
+extension `RFC 5952 Tests`.`RFC 5952 Tests`.`RFC 5952 Tests` {
     @Suite struct `Zero Compression Tests` {}
+
     @Suite struct `Compression Range Tests` {}
 }
 
-extension `RFC 5952 Tests`.`Zero Compression Tests` {
+extension `RFC 5952 Tests`.`RFC 5952 Tests`.`Zero Compression Tests` {
 
     @Test
     func `the longest run of zero fields is compressed`() {
@@ -66,7 +72,7 @@ extension `RFC 5952 Tests`.`Zero Compression Tests` {
     }
 }
 
-extension `RFC 5952 Tests`.`Compression Range Tests` {
+extension `RFC 5952 Tests`.`RFC 5952 Tests`.`Compression Range Tests` {
 
     @Test
     func `the range covers exactly the compressed fields`() throws {

@@ -6,12 +6,17 @@
     import Serializer
     import Testing
 
-    @Suite
-    struct `RFC 5952 Coder Tests` {
+extension `RFC 5952 Coder Tests`.`RFC 5952 Coder Tests` {
+        @Suite
+        struct `RFC 5952 Coder Tests` {
+        }
+}
+
+    extension `RFC 5952 Coder Tests`.`RFC 5952 Coder Tests`.`RFC 5952 Coder Tests` {
         @Suite struct `Canonical Text Tests` {}
     }
 
-    extension `RFC 5952 Coder Tests`.`Canonical Text Tests` {
+    extension `RFC 5952 Coder Tests`.`RFC 5952 Coder Tests`.`Canonical Text Tests` {
 
         static func text(_ address: RFC_4291.IPv6.Address) -> String {
             var codes: [ASCII.Code] = []
