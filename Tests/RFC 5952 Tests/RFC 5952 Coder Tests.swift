@@ -67,10 +67,32 @@
         }
 
         @Test
-        func `an IPv4-mapped address keeps its hexadecimal fields`() {
+        func `an IPv4-mapped address ends in dotted-decimal, RFC 5952 section 5`() {
             #expect(
                 Self.text(RFC_4291.IPv6.Address(0, 0, 0, 0, 0, 0xffff, 0xc000, 0x0201))
-                    == "::ffff:c000:201"
+                    == "::ffff:192.0.2.1"
+            )
+        }
+
+        @Test
+        func `an IPv4-mapped unspecified IPv4 address ends in dotted-decimal`() {
+            #expect(Self.text(RFC_4291.IPv6.Address(0, 0, 0, 0, 0, 0xffff, 0, 0)) == "::ffff:0.0.0.0")
+        }
+
+        @Test
+        func `an IPv4-translated address ends in dotted-decimal, RFC 5952 section 5`() {
+            #expect(
+                Self.text(RFC_4291.IPv6.Address(0, 0, 0, 0, 0xffff, 0, 0xc000, 0x0201))
+                    == "::ffff:0:192.0.2.1"
+            )
+        }
+
+        @Test
+        func `an address outside the well-known IPv4 prefixes keeps hexadecimal fields`() {
+            #expect(Self.text(RFC_4291.IPv6.Address(0, 0, 0, 0, 0, 0, 0xc000, 0x0201)) == "::c000:201")
+            #expect(
+                Self.text(RFC_4291.IPv6.Address(0x64, 0xff9b, 0, 0, 0, 0xffff, 0xc000, 0x0201))
+                    == "64:ff9b::ffff:c000:201"
             )
         }
 

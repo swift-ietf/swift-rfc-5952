@@ -8,4 +8,4 @@ Use this package when you need the one canonical text form of an IPv6 address, f
 - When two runs of zero fields are equally long, the first one is compressed.
 - `RFC_5952.Compression.start` counts fields from 0, and `RFC_5952.Compression.range` covers exactly the compressed fields, so `RFC_5952.Compression.end` is the first field after the run.
 - The canonical text writes hexadecimal digits in lowercase, drops leading zeros in each field, and writes the compressed run as a double colon. The unspecified address is a bare double colon, and the loopback address is a double colon followed by 1.
-- An IPv4-mapped address keeps its last two fields in hexadecimal, as in `::ffff:c000:201`, not in dotted-decimal form.
+- An IPv4-mapped address (`::ffff:0:0/96`) or IPv4-translated address (`::ffff:0:0:0/96`) writes its last 32 bits in dotted-decimal form, as in `::ffff:192.0.2.1`, following RFC 5952 section 5. Every other address is written in hexadecimal only.
